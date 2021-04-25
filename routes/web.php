@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use \App\Models\Kisiler;
 use \App\Models\Kitaplar;
 use \App\Models\Yazarlar;
+use \App\Http\Controllers\KitaplarController;
 
 
 //Route::namespace('Admin')->prefix('admin')->group(function () {
@@ -54,11 +55,48 @@ Route::get('/kisiler', function () {
 //    $yazar = Yazarlar::find(2);
 //    $yazar->delete();
 
-    $yazarlar=Yazarlar::all();
-    dd($yazarlar);
+//    $yazarlar=Yazarlar::all();
+//    dd($yazarlar);
 
+//    $kitap=Kitaplar::firstOrCreate(["isim"=>"Aynalar"],["yazar_id"=>1]);
+//    dd($kitap);
+
+//    $kitap = Kitaplar::firstOrCreate(["isim" => "Aynalar","yazar_id"=>5]);
+//    dd($kitap);
+
+//    $yazar=Kitaplar::find(1)->yazar;
+//    dd($yazar);
+
+//    $kitap=Yazarlar::find(1)->kitap->isim;
+//    dd($kitap);
+
+//    $kitap = Yazarlar::find(1)->kitaplar;
+//
+//    foreach($kitap as $key=>$value)
+//    {
+//        echo $value["isim"]."<br>";
+//    }
+//    dd($kitap);
+
+//    $store["isim"]="Mesnevi";
+//    $kitap=Kitaplar::updateOrCreate([
+//        "yazar_id"=>6
+//    ],$store);
+
+//    $kitap=Kitaplar::find(1);
+//    $kitapIsmi=$kitap->isim;
+//    echo $kitapIsmi;
+
+//    Kitaplar::create(["isim"=>"MUSTAFA DIGILLIDEN DINLE ogren","yazar_id"=>2]);
+
+//    $satinAlinan=Yazarlar::find(1)->satinal;
+//    dd($satinAlinan);
+    //todo belongstomany yapısı ile ilgili bir örnek gerçekleştirilecek
 
 });
+
+Route::get('/ekle',[KitaplarController::class,'create']);
+Route::post('/ekle',[KitaplarController::class,'store'])->name('kitap.ekle');
 
 //Route::get('/', [AnasayfaController::class, 'index']);
 //Route::view('/kategori', 'kategori');
