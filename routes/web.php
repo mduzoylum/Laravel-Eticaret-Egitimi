@@ -11,6 +11,7 @@ use \App\Models\Kisiler;
 use \App\Models\Kitaplar;
 use \App\Models\Yazarlar;
 use \App\Http\Controllers\KitaplarController;
+use \App\Http\Controllers\emailController;
 
 
 //Route::namespace('Admin')->prefix('admin')->group(function () {
@@ -98,6 +99,9 @@ Route::get('/kisiler', function () {
 Route::get('/ekle',[KitaplarController::class,'create']);
 Route::post('/ekle',[KitaplarController::class,'store'])->name('kitap.ekle');
 
+
+Route::get('/email',[emailController::class,'send']);
+
 //Route::get('/', [AnasayfaController::class, 'index']);
 //Route::view('/kategori', 'kategori');
 //Route::view('/urun', 'urun');
@@ -107,7 +111,27 @@ Route::post('/ekle',[KitaplarController::class,'store'])->name('kitap.ekle');
 
 
 
+Auth::routes();
 
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::get("/gizli",function (){
+    echo "18 yaşından büyüksün";
+})->middleware(["resit","ogrenci","erkek"]);
 
+Route::get('/yasak',function (){
+    echo "Bu alana erişiminiz yok";
+});
+
+Route::get('/ajax',function (){
+    return view("ajax");
+});
+
+Route::get('/ajax-get',function (){
+    echo "Get Metodu";
+})->name("ajax.get");;
+
+Route::post('/ajax-post',function (){
+    echo "Post Metodu";
+})->name("ajax.post");
 
