@@ -6,12 +6,15 @@ use \App\Http\Controllers\Admin\LoginController;
 use \App\Http\Controllers\Admin\Auth\InfoController;
 use App\Http\Controllers\AnasayfaController;
 use App\Http\Controllers\indexController;
+use App\Models\email;
 use Illuminate\Support\Facades\Route;
 use \App\Models\Kisiler;
 use \App\Models\Kitaplar;
 use \App\Models\Yazarlar;
 use \App\Http\Controllers\KitaplarController;
 use \App\Http\Controllers\emailController;
+use \Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 
 //Route::namespace('Admin')->prefix('admin')->group(function () {
@@ -96,11 +99,11 @@ Route::get('/kisiler', function () {
 
 });
 
-Route::get('/ekle',[KitaplarController::class,'create']);
-Route::post('/ekle',[KitaplarController::class,'store'])->name('kitap.ekle');
+Route::get('/ekle', [KitaplarController::class, 'create']);
+Route::post('/ekle', [KitaplarController::class, 'store'])->name('kitap.ekle');
 
 
-Route::get('/email',[emailController::class,'send']);
+Route::get('/email', [emailController::class, 'send']);
 
 //Route::get('/', [AnasayfaController::class, 'index']);
 //Route::view('/kategori', 'kategori');
@@ -110,28 +113,111 @@ Route::get('/email',[emailController::class,'send']);
 //Route::view('/siparis', 'siparis');
 
 
-
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get("/gizli",function (){
+Route::get("/gizli", function () {
     echo "18 yaşından büyüksün";
-})->middleware(["resit","ogrenci","erkek"]);
+})->middleware(["resit", "ogrenci", "erkek"]);
 
-Route::get('/yasak',function (){
+Route::get('/yasak', function () {
     echo "Bu alana erişiminiz yok";
 });
 
-Route::get('/ajax',function (){
+Route::get('/ajax', function () {
     return view("ajax");
 });
 
-Route::get('/ajax-get',function (){
+Route::get('/ajax-get', function () {
     echo "Get Metodu";
 })->name("ajax.get");;
 
-Route::post('/ajax-post',function (){
+Route::post('/ajax-post', function () {
     echo "Post Metodu";
 })->name("ajax.post");
 
+
+Route::get('/datatable', function () {
+    return view("datatable");
+});
+
+Route::post('/datatable-post', [indexController::class, "getData"])->name("datatable.post");
+
+Route::get('/edit', function (\Illuminate\Http\Request $request) {
+    echo $request->input("id") . " Edit";
+})->name("datatable.edit");
+
+Route::get('/delete', function (\Illuminate\Http\Request $request) {
+    $delete = \App\Models\email::find($request->input("id"))->delete();
+    echo $delete;
+})->name("datatable.delete");
+
+Route::get('/dosya-yukle', function () {
+    echo '<form action="/dosya-post" method="POST" enctype="multipart/form-data">' . csrf_field();
+    echo '<input type="file" multiple name="photos[]">
+        <button>Post</button>
+    </form>';
+});
+
+
+Route::post('/dosya-post', function (Request $request) {
+//    $file=$request->file("photo")->store('');
+
+//    $file=$request->file("photo");
+//    $fileName="benimresmim-".rand(0,1000).".".$file->getClientOriginalExtension();
+//    $path=$file->storeAs('photos',$fileName);
+//    dd($file);
+
+    //multiple
+//    $images=$request->file("photos");
+//    $path=[];
+//
+//    foreach ($images as $image)
+//    {
+//        $name="123-".rand(1,999).'.'.$image->getClientOriginalExtension();
+//        $file=$image->storeAs('photos',$name);
+//        $path[]=$file;
+//    }
+//
+//    dd($path);
+
+});
+
+Route::get('/check', function () {
+//    $control = Storage::disk("local")->exists('photos/123-937x.jpg');
+//    dd($control);
+
+//    Storage::put("files/file.xlsx","Laravel Eticaret Eğitimi");
+//    Storage::append("files/file.txt","Türkiye");
+//    Storage::prepend("files/file.txt","Konya");
+
+//    $control=Storage::exists('files/file.txt');
+//    dd($control);
+
+//    return Storage::download('files/file.txt','laravel.txt');
+
+//    $url=Storage::url('files/file.txt');
+//    $url=Storage::size('files/file.txt');
+//    $url=Storage::size('photos/123-937.jpg');
+//    $url=date("d-m-Y H:i:s",Storage::lastModified('photos/123-937.jpg'));
+//    $url=Storage::copy('files/file.txt','photos/file.txt');
+//    $url=Storage::move('files/file.txt','photos/file.txt');
+    $url=Storage::delete('photos/file.txt');
+    dd($url);
+});
+
+
+Route::get('/komutcalistir',function (){
+    \Illuminate\Support\Facades\Artisan::call("UserControl:start");
+});
+
+Route::get('/kayit-ol',function (){
+   $email=email::create([
+       "content"=>'turkey@gmail.com'
+   ]);
+   event(new \App\Events\BlogAdded($email));
+});
+
+/*ÖDEV*/
+//Bir sonraki hafta schedule yapısının server tarafında nasıl çalıştığı araştırılacak.(Cron Job)
